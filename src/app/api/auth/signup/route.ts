@@ -11,11 +11,7 @@ const UserSchema = z.object({
 });
 
 // Handler function
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
-
+export default function POST(req: NextApiRequest, res: NextApiResponse) {
   try {
     const userData = UserSchema.parse(req.body);
     return res.status(200).json(userData);
