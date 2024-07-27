@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 type Props = {};
 
 const Header = (props: Props) => {
@@ -8,7 +9,9 @@ const Header = (props: Props) => {
 
   return (
     <div className="flex justify-around">
-      <div>Hello I am woking</div>
+      <div>
+        <Link href={"/"}>Home</Link>
+      </div>
 
       {session.status === "unauthenticated" ? (
         <button
