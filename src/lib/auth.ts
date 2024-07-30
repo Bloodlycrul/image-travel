@@ -1,8 +1,9 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import prisma from "../Database/db";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -52,6 +53,12 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_ID || "",
       clientSecret: process.env.GOOGLE_SECRET || "",
+      authorization: {
+        params: {
+          scope:
+            "openid email profile https://www.googleapis.com/auth/photoslibrary https://www.googleapis.com/auth/photoslibrary.sharing https://www.googleapis.com/auth/photoslibrary.readonly",
+        },
+      },
     }),
   ],
   pages: {
@@ -93,11 +100,16 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
+      }
+      console.log(account);
+      if (account?.access_token) {
+        token.accessToken = account.accessToken;
+        console.log(token.accessToken);
       }
       return token;
     },

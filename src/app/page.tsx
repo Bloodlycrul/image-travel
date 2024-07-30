@@ -1,29 +1,26 @@
 "use client";
-import Header from "@/components/Header";
-import { useSession } from "next-auth/react";
-import { generateFromString } from "generate-avatar";
-import Image from "next/image";
-import getSession from "../app/utils/getSession";
+import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const session = useSession();
-  
+  const [mediaItems, setMediaItems] = useState([]);
+  console.log(mediaItems);
+
+  useEffect(() => {
+    const getMediaItems = async () => {
+      const data = await fetch("/api/media");
+      const convertData = await data.json();
+      console.log(convertData);
+    };
+
+    getMediaItems();
+  }, []);
 
   return (
     <>
       <h2>{JSON.stringify(session)}</h2>
-      {session && (
-        <div>
-          <Image
-            width={90}
-            height={90}
-            alt={session?.data?.user?.name || ""}
-            src={`data:image/svg+xml;utf8,${generateFromString(
-              "example@test.com"
-            )}`}
-          />
-        </div>
-      )}
+      {session && <div></div>}
     </>
   );
 }
